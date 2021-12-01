@@ -43,8 +43,9 @@ func Inject(srcPath, destPath string) {
 	si := new(syscall.StartupInfo)
 	pi := new(syscall.ProcessInformation)
 
-	// CREATE_SUSPENDED := 0x00000004
-	err = syscall.CreateProcess(cmd, nil, nil, nil, false, 0x00000004, nil, nil, si, pi)
+	// CREATE_SUSPENDED   := 0x00000004
+	// CREATE_NEW_CONSOLE := 0x00000010
+	err = syscall.CreateProcess(cmd, nil, nil, nil, false, 0x00000014, nil, nil, si, pi)
 	if err != nil {
 		panic(err)
 	}
