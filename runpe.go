@@ -31,7 +31,7 @@ const (
 )
 
 // Inject starts the src process and injects the target process.
-func Inject(srcPath, destPath string) {
+func Inject(srcPath, destPath string, console bool) {
 
 	cmd, err := syscall.UTF16PtrFromString(srcPath)
 	if err != nil {
@@ -43,8 +43,15 @@ func Inject(srcPath, destPath string) {
 	si := new(syscall.StartupInfo)
 	pi := new(syscall.ProcessInformation)
 
-	// CREATE_SUSPENDED := 0x00000004
-	err = syscall.CreateProcess(cmd, nil, nil, nil, false, 0x00000004, nil, nil, si, pi)
+    var flag uint32
+	CREATE_SUSPENDED   := 0x00000004
+	CREATE_NEW_CONSOLE := 0x00000010
+    if console {
+        flag = uint32(CREATE_SUSPENDED | CREATE_NEW_CONSOLE)
+    } else {
+        flag = uint32(CREATE_SUSPENDED)
+    }
+	err = syscall.CreateProcess(cmd, nil, nil, nil, false, flag, nil, nil, si, pi)
 	if err != nil {
 		panic(err)
 	}
